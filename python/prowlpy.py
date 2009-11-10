@@ -1,5 +1,36 @@
 #/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# Copyright (c) 2009, Jaccob Burch
+# Copyright (c) 2009, Olivier Hervieu
+#
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#
+#     * Neither the name of the University of California, Berkeley nor the
+#       names of its contributors may be used to endorse or promote products
+#       derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE REGENTS AND CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """
 Prowlpy V0.5 originally written by Jacob Burch, modified by Olivier Hervieu.
 
@@ -7,6 +38,8 @@ Python Prowlpy is a python module that implement the public api of Prowl to
 send push notification to iPhones.
 
 See http://prowl.weks.net for information about Prowl.
+
+Prowlpy is avalaible both for python2.x and python3.x
 
 The prowlpy module respect the API of prowl. So prowlpy provides a Prowl class
 which implements two methods :
@@ -18,14 +51,21 @@ prowl notification.
 
 """
 
-__author__          = 'Jacob Burch@gmail.com'
-__author_email__    = 'jacoburch@gmail.com'
-__maintener__       = 'Olivier Hervieu'
-__maintener_email__ = 'olivier.hervieu@gmail.com'
-__version__         = 0.5
+__author__           = 'Jacob Burch@gmail.com'
+__author_email__     = 'jacoburch@gmail.com'
+__maintainer__       = 'Olivier Hervieu'
+__maintainer_email__ = 'olivier.hervieu@gmail.com'
+__version__          = 0.5
 
-from httplib import HTTPSConnection as Https
-from urllib  import urlencode
+from sys import version as _python_version
+
+#Detecting python version
+if _python_version[0] == '2':
+    from httplib import HTTPSConnection as Https
+    from urllib  import urlencode
+elif _python_version[0] == '3':
+    from http.client import HTTPSConnection as Https
+    from urllib.parse import urlencode
 from xml.dom import minidom
 
 API_DOMAIN = 'prowl.weks.net'
@@ -34,7 +74,7 @@ class Prowl(object):
 
     def __init__(self, apikey):
         """
-        Initialize a Prowl instance.
+        Initialize a Prowl instance. It need an apikey.
         """
         self.apikey = apikey
 
@@ -129,16 +169,25 @@ class Prowl(object):
         Parse the prowl response.
 
         Doctest Purpose:
-        >>> Prowl('dummykey')._parse_prowl_response('')
-        {u'resetdate': None, u'message': None, u'code': None, u'remaining': None}
-        >>> Prowl('dummykey')._parse_prowl_response('<?xml version="1.0" encoding="UTF-8"?>\\n<prowl>\\n<error code="401">Invalid API key(s).</error>\\n</prowl>')
-        {u'resetdate': None, u'message': u'Invalid API key(s).', u'code': u'401', u'remaining': None}
+        >>> EXPECTED_RESULT = { 'resetdate': None, 
+        ...                     'message': None, 
+        ...                     'code': None, 
+        ...                     'remaining': None}
+        >>> Prowl('dummykey')._parse_prowl_response('') == EXPECTED_RESULT
+        True
+        >>> EXPECTED_RESULT = { 'resetdate': None, 
+        ...                     'message': 'Invalid API key(s).', 
+        ...                     'code': '401', 
+        ...                     'remaining': None}
+        >>> TEST_STRING = '<?xml version="1.0" encoding="UTF-8"?>\\n<prowl>\\n<error code="401">Invalid API key(s).</error>\\n</prowl>'
+        >>> Prowl('dummykey')._parse_prowl_response(TEST_STRING) == EXPECTED_RESULT
+        True
         """
         
-        response_as_dict = {    u'code'      : None, 
-                                u'remaining' : None, 
-                                u'resetdate' : None, 
-                                u'message'   : None}
+        response_as_dict = {    'code'      : None, 
+                                'remaining' : None, 
+                                'resetdate' : None, 
+                                'message'   : None}
 
         dict_attr = {}
 
@@ -155,14 +204,14 @@ class Prowl(object):
                         if dom_elem.hasChildNodes():
                             childs = dom_elem.childNodes
                             if len(childs)==1:
-                                dict_attr[u'message'] = childs[0].data 
+                                dict_attr['message'] = childs[0].data 
         except : pass 
 
         for attr in dict_attr :
             response_as_dict[attr]=dict_attr[attr]
 
         #DEBUG
-        #print response_as_dict
+        #print(response_as_dict)
 
         return response_as_dict
 
