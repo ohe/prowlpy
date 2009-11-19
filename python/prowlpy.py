@@ -55,7 +55,7 @@ __author__           = 'Jacob Burch@gmail.com'
 __author_email__     = 'jacoburch@gmail.com'
 __maintainer__       = 'Olivier Hervieu'
 __maintainer_email__ = 'olivier.hervieu@gmail.com'
-__version__          = 0.5.1
+__version__          = '0.5.1'
 
 from sys import version as _python_version
 
