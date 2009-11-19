@@ -16,7 +16,6 @@ which implements two methods :
 - add, to push a notification to an iPhone,
 - verify, to verify an API key.
 
-
 Dependencies 
 ============
 
@@ -26,6 +25,12 @@ Dependencies
 Change Log
 ==========
 
+V0.5.1
+-------
+
+- Fix shebang
+- add command line utility based on the work of Greg Allen
+
 V0.5
 ----
 
@@ -33,9 +38,9 @@ V0.5
 - Parse prowls returned XML results
 - Modification in the API to get better results 
   (error code, prowls message, remaining notifications...)
-- Remove dependencies to httplib2 and replace it by httplib. 
-  So prowlpy do not need externals python modules.
-- Add a pythonic installer based on distutils.
+- Remove dependencies to httplib2 and replace it by httplib
+  So prowlpy do not need externals python modules
+- Add a pythonic installer based on distutils
 
 V0.42
 -----
@@ -74,3 +79,10 @@ Todo
 - allow multiple apikey in Prowl constructor
 - Add more test unit
 
+Contributors
+============
+
+- Jacobb Burch
+- Nick Wolf
+- Olivier Hervieu
+- Greg Allen

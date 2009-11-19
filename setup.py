@@ -1,4 +1,4 @@
-#/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2009, Jaccob Burch
@@ -59,4 +59,5 @@ setup(
         maintainer = __maintainer__,
         maintainer_email = __maintainer_email__,
         url = 'http://github.com/jacobb/prowlpy',
+        scripts=['bin/prowlpost']
 )        
