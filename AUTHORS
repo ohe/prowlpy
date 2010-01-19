@@ -1,0 +1,4 @@
+Jacobb Burch - Initial author of prowlpy
+Nick Wolf - Add __init__ file
+Olivier Hervieu - Code refactoring, pythonic install, python3 compatibility
+Greg Allen - Command Line interface to post prowl messages
